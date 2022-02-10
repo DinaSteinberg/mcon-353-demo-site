@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+.App .Bio {
+  text-align: left;
+  width: 50%;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -14,7 +19,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #6a92e0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,4 +40,15 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.Accordion {
+  width: 60%;
+  text-align: left;
+  margin-top: 20px;
+}
+
+.float_left {
+  float: left;
+  border: blueviolet;
 }
