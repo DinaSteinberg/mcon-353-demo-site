@@ -1,12 +1,12 @@
-import logo from './logo.svg';
-import birdhouses from './birdhouses_painting.jpg';
-import bridge from './bridge_painting.jpg';
-import family from './my_family.jpg';
-import nieces from './my_nieces.jpg';
-import sunset from './sunset_painting.jpg';
-import kids from './the_kids.jpg';
+
+import birdhouses from '../../birdhouses_painting.jpg';
+import bridge from '../../bridge_painting.jpg';
+import family from '../../my_family.jpg';
+import nieces from '../../my_nieces.jpg';
+import sunset from '../../sunset_painting.jpg';
+import kids from '../../the_kids.jpg';
 import { Button, Slider } from "@mui/material";
-import './App.css';
+import './Home.css';
 import React, {useState} from "react";
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -18,6 +18,15 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+
+export const Home =() => {
+  const[value, setValue] = useState(55);
+
+  function onSliderChange(event){
+    const newValue = event.target.value;
+    console.log(newValue);
+    setValue(newValue);
+  }
 
 function Papers ()  {
   return (
@@ -41,15 +50,6 @@ function Papers ()  {
   );
 }
 
-function App() {
-  const[value, setValue] = useState(55);
-
-  function onSliderChange(event){
-    const newValue = event.target.value;
-    console.log(newValue);
-    setValue(newValue);
-  }
-  
 
 
   return (
@@ -78,7 +78,6 @@ function App() {
         <p>Check out some of Dina's profiles:</p>
         <Links/>
         <InfoAccordion/>
-        <Slider style={{ marginTop: "500px"}} value = {value} onChange={onSliderChange}/>//Don't call it with () because you want a function reference, not call. Call means you want to execute it right now.
       </header>
     </div>
     
@@ -138,6 +137,7 @@ function Links(){
       display: 'flex',
       flexWrap: 'wrap',
       padding: '30px',
+      margin: '20px',
       '& > *': {
         m: 1,
       },
@@ -221,4 +221,4 @@ function InfoAccordion() {
   );
 }
 
-export default App;
+export default Home;
