@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './components/todo_youTube/todo.css';
+
 import App from '../src/components/app/App';
 import reportWebVitals from './reportWebVitals';
 

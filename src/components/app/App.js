@@ -1,16 +1,17 @@
 import './App.css';
-import React, {useState} from "react";
+import React from "react";
 import {Home} from '../home/Home';
-import {TodoInput} from '../todo/TodoInput';
+import {Todo} from '../todo/Todo';
+import TodoList from '../todo_youTube/TodoList';
 
 
 
 function App() {
 
   return (
+    
     <div>
-      <Home/>
-      <TodoInput/>
+      <TodoList />
     </div>
   );
 }
