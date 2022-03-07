@@ -1,86 +1,73 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import AddIcon from "@mui/icons-material/Add";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import {
-  AddTask,
-  SecurityUpdateGoodSharp,
-  TaskSharp,
-} from "@mui/icons-material";
+import React, { useState, useContext } from "react";
+import IconButton from "@material-ui/core/IconButton";
+import { IoIosCheckmarkCircleOutline, IoMdTrash } from "react-icons/io";
+import { TodoContext } from "./TodoContext";
 
 export const Todo = () => {
-  const [tasks, setTasks] = React.useState([]);
-  const [text, setText] = React.useState("");
-
-  function addTask(task) {
-    if (!task.text || /^\s*$/.test(task.text)) {
-      return;
-    }
-    const newTodos = [...tasks, task];
-
-    setTasks(newTodos);
-  }
-
-  function removeItem(deletedTodo) {
-    setTasks(tasks.filter((todo) => todo !== deletedTodo));
-  }
+  const { todos } = useContext(TodoContext);
 
   return (
     <div>
-      <Box
-        component="form"
-        sx={{
-          "& > :not(style)": { m: 1, width: "25ch" },
-          "& button": { m: 1 },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <input
-          className="Todo"
-          type="text"
-          label="Task"
-          onChange={(event) => setText(event.target.value)}
-        />
-        <TextField
-          id="title"
-          label="ToDo Title"
-          variant="outlined"
-          onChange={(event) => setText(event.target.value)}
-        />
-        <TextField
-          id="description"
-          label="ToDo Description"
-          variant="outlined"
-        />
-        <Button variant="text" size="small" onclick={addTask}>
-          <AddIcon />
-        </Button>
-      </Box>
-
-      {tasks.map((todo) => (
-        <TodoItem text={todo} removeItem={removeItem} />
+      <TodoForm />
+      {todos.map((todo) => (
+        <TodoItem todo={todo} />
       ))}
     </div>
   );
 };
 
-const TodoList = (props) => {};
-
 const TodoItem = (props) => {
+  const { removeTodo, completeTodo } = useContext(TodoContext);
+  return (
+    <div className={props.todo.isComplete ? "todo-row-complete" : "todo-row"}>
+      {/* <Box> */}
+      {props.todo.text}
+
+      <div className="icons">
+        <IconButton onClick={() => completeTodo(props.todo)}>
+          <IoIosCheckmarkCircleOutline className="done-icon" />
+        </IconButton>
+
+        <IconButton onClick={() => removeTodo(props.todo)}>
+          <IoMdTrash className="delete-icon" />
+        </IconButton>
+      </div>
+      {/* </Box> */}
+    </div>
+  );
+};
+
+const TodoForm = () => {
+  const { addTodo } = useContext(TodoContext);
+  const [input, setInput] = useState("");
+
+  function textChanged(event) {
+    setInput(event.target.value);
+  }
+
+  function submit(event) {
+    event.preventDefault();
+    setInput(" ");
+
+    addTodo({
+      text: input,
+      isComplete: false,
+    });
+  }
+
   return (
     <div>
-      props.text
-      <Button onclick={() => props.removeItem(props.text)}>Delete</Button>
+      <form className="todo-form" onSubmit={(event) => submit(event)}>
+        <input
+          type="text"
+          name="todo"
+          placeholder="Add a Todo"
+          className="todo-input"
+          value={input}
+          onChange={(event) => textChanged(event)}
+        />
+        <button className="todo-button">Add a Todo</button>
+      </form>
     </div>
   );
 };
