@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import { IoIosCheckmarkCircleOutline, IoMdTrash } from "react-icons/io";
-import { TodoContext } from "./TodoContext";
+import { TodoContext } from "../../state/todo/context";
 
 export const Todo = () => {
   const { todos } = useContext(TodoContext);
 
   return (
-    <div>
+    <div data-testid="todo">
       <TodoForm />
       {todos.map((todo) => (
         <TodoItem todo={todo} />
