@@ -7,7 +7,7 @@ export const Todo = () => {
   const { todos } = useContext(TodoContext);
 
   return (
-    <div data-testid="todo">
+    <div data-testid="todo" className="Todo">
       <TodoForm />
       {todos.map((todo) => (
         <TodoItem todo={todo} />
