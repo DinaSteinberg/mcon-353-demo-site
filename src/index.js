@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './components/todo/todo.css';
+import './components/chat/chat.css';
 
 import App from '../src/components/app/App';
 import reportWebVitals from './reportWebVitals';

@@ -1,0 +1,12 @@
+.outgoing {
+  background-color: rgb(17, 163, 17);
+}
+
+.incoming {
+  background-color: #2355c2;
+}
+
+body {
+  align-self: center;
+  background-color: gainsboro;
+}

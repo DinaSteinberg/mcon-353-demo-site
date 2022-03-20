@@ -20,7 +20,6 @@ const TodoItem = (props) => {
   const { removeTodo, completeTodo } = useContext(TodoContext);
   return (
     <div className={props.todo.isComplete ? "todo-row-complete" : "todo-row"}>
-      {/* <Box> */}
       {props.todo.text}
 
       <div className="icons">
@@ -32,7 +31,6 @@ const TodoItem = (props) => {
           <IoMdTrash className="delete-icon" />
         </IconButton>
       </div>
-      {/* </Box> */}
     </div>
   );
 };

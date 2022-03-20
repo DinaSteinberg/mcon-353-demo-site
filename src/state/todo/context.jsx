@@ -4,7 +4,7 @@ import React, { useState } from "react";
 export const TodoContext = React.createContext();
 
 export const TodoProvider = (props) => {
-  const [todos, setTodos] = useState();
+  const [todos, setTodos] = useState([]);
 
   function addTodo(todo) {
     const newTodos = [...todos, todo];

@@ -4,6 +4,7 @@ import {Home} from '../home/Home';
 import {Header} from '../header/header';
 import {TodoProvider} from '../../state/todo/context';
 import {Todo} from '../todo/Todo';
+import {Chatbox} from '../chat/chatbox';
 import {
   BrowserRouter,
   Routes,
@@ -24,6 +25,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />}/>
               <Route path="/todo" element={<Todo />} />
+              <Route path="/chat" element={<Chatbox />} />
             </Routes>
           </BrowserRouter>
         </TodoProvider>
