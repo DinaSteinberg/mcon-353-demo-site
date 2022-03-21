@@ -20,11 +20,24 @@ export const Chatbox = () => {
   const [chats, setChats] = useState([]);
   const [messages, setMessages] = useState([]);
   const [userName, setUser] = useState(" ");
-  var currChat = {};
+  const [currChat, setCurrChat] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [newChatItem, setNewChatItem] = useState([]);
 
   fetch("https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats")
-    .then((response) => response.json())
-    .then((data) => setChats(data.Items));
+    .then(async (response) => {
+      const data = await response.json();
+      if (!response.ok) {
+        // get error message from body or default to response status
+        const error = (data && data.message) || response.status;
+        return Promise.reject(error);
+      }
+      setChats(data.Items);
+    })
+    .catch((error) => {
+      setErrorMessage(error);
+      console.error("There was an error!", error);
+    });
 
   function nameInputted(name) {
     setUser(name);
@@ -41,24 +54,42 @@ export const Chatbox = () => {
       },
       body: JSON.stringify(chat),
     })
-      .then((response) => response.json())
-      .then((data) => setMessages([...messages, data.Items]));
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (data && data.message) || response.status;
+          return Promise.reject(error);
+        }
+        setNewChatItem(data.Item);
+        console.log(data);
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+        console.error("There was an error!", error);
+      });
+    setChats([...chats, newChatItem]);
+    console.log("New Chat: " + newChatItem.id);
+    chatSelected(newChatItem.id);
   }
 
   function chatSelected(chat) {
-    fetch(
-      "https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats/" +
-        `${chat}` +
-        "/messages"
-    )
-      .then((response) => response.json())
-      .then((data) => setMessages(data.Items));
-    currChat = chat;
+    if (chat != null) {
+      fetch(
+        "https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats/" +
+          `${chat}` +
+          "/messages"
+      )
+        .then((response) => response.json())
+        .then((data) => setMessages(data.Items));
+      setCurrChat(chat);
+      console.log("Current chat: " + `${currChat}`);
+    }
   }
 
-  function chatInputted(newMessage) {
+  function newMessageInputted(newMessage) {
     const message = {
-      chatId: "New Chat",
+      chatId: currChat,
       username: userName,
       text: newMessage,
     };
@@ -71,6 +102,8 @@ export const Chatbox = () => {
     })
       .then((response) => response.json())
       .then((data) => setMessages([...messages, data.Items]));
+    console.log("New message added");
+    chatSelected(currChat);
   }
 
   return (
@@ -88,7 +121,7 @@ export const Chatbox = () => {
         </div>
         <Divider />
         <div className="box_footer">
-          <ChatInput handleChange={chatInputted} />
+          <ChatInput handleChange={newMessageInputted} />
         </div>
       </Box>
     </div>
@@ -106,6 +139,7 @@ const DropDown = (props) => {
   }
 
   function submit(event) {
+    handleClose();
     props.newChat(event.target.value);
   }
 
@@ -126,7 +160,7 @@ const DropDown = (props) => {
         }}
         noValidate
         autoComplete="off"
-        alignSelf="left"
+        alignself="left"
       >
         <TextField
           select
@@ -167,7 +201,7 @@ const DropDown = (props) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleClose()}>Cancel</Button>
-          <Button onClick={() => handleClose()}>Add</Button>
+          <Button onClick={(event) => submit(event)}>Add</Button>
         </DialogActions>
       </Dialog>
     </div>
@@ -189,24 +223,28 @@ const UserName = (props) => {
       onChange={(event) => {
         submit(event);
       }}
-      alignSelf="right"
+      alignself="right"
     />
   );
 };
 
 const ChatInput = (props) => {
+  const [input, setInput] = useState(" ");
   function handleChange(event) {
-    event.perventDefault();
-    props.handleChange(event.target.value);
+    event.preventDefault();
+    props.handleChange(input);
   }
 
   return (
-    <TextField
-      id="chat_input"
-      variant="outlined"
-      sx={{ width: 1 }}
-      onChange={(event) => handleChange(event)}
-    />
+    <form onSubmit={(event) => handleChange(event)}>
+      <TextField
+        id="chat_input"
+        variant="outlined"
+        sx={{ width: 1 }}
+        value={input}
+        onInput={(e) => setInput(e.target.value)}
+      />
+    </form>
   );
 };
 
