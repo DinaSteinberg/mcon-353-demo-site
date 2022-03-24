@@ -20,11 +20,13 @@ export const Chatbox = () => {
   const [chats, setChats] = useState([]);
   const [messages, setMessages] = useState([]);
   const [userName, setUser] = useState(" ");
-  const [currChat, setCurrChat] = useState("");
+  const [currChat, setCurrChat] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
   const [newChatItem, setNewChatItem] = useState([]);
 
-  fetch("https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats")
+  fetch("https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats", {
+    headers: { "Access-Control-Allow-Origin": "*" },
+  })
     .then(async (response) => {
       const data = await response.json();
       if (!response.ok) {
@@ -115,13 +117,14 @@ export const Chatbox = () => {
             chats={chats}
             selected={chatSelected}
             newChat={newChat}
+            curr={currChat}
           />
           <UserName onChange={nameInputted} />
         </div>
         <Divider />
         <div className="box_body">
           {messages.map((chat) => (
-            <DisplayChat chat={chat} />
+            <DisplayChat chat={chat} user={userName} />
           ))}
         </div>
         <Divider />
@@ -134,7 +137,9 @@ export const Chatbox = () => {
 };
 
 const DropDown = (props) => {
-  const [selectedChat, setChat] = useState(props.currChat);
+  const current =
+    props.curr == undefined ? props.chats.slice(0, 1) : props.curr.name;
+  const [selectedChat, setChat] = useState(current);
   const [newChat, setNewChat] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -174,7 +179,7 @@ const DropDown = (props) => {
           label="Chat"
           onChange={(event) => handleChange(event)}
           helperText="Select a chat"
-          value={selectedChat}
+          value={selectedChat.name}
         >
           {props.chats.map((chat) => (
             <MenuItem key={chat.id} value={chat.id}>
@@ -218,22 +223,25 @@ const DropDown = (props) => {
 };
 
 const UserName = (props) => {
+  const [input, setInput] = useState(" ");
+
   function submit(event) {
     event.preventDefault();
-    props.onChange(event.target.value);
+    setInput("");
+    props.onChange(input);
   }
+
   return (
-    <TextField
-      id="chat_input"
-      variant="outlined"
-      label="Enter Username"
-      sx={{ m: 1, width: "25ch" }}
-      required
-      onChange={(event) => {
-        submit(event);
-      }}
-      alignself="right"
-    />
+    <form onSubmit={(event) => submit(event)}>
+      <TextField
+        id="username_input"
+        variant="outlined"
+        label="Enter Username"
+        sx={{ m: 1, width: "25ch" }}
+        value={input}
+        onInput={(e) => setInput(e.target.value)}
+      />
+    </form>
   );
 };
 
@@ -241,6 +249,7 @@ const ChatInput = (props) => {
   const [input, setInput] = useState(" ");
   function handleChange(event) {
     event.preventDefault();
+    setInput("");
     props.handleChange(input);
   }
 
@@ -261,7 +270,7 @@ const DisplayChat = (props) => {
   return (
     <Card
       sx={{ m: 2 }}
-      className={props.chat.user == props.user ? "outgoing" : "incoming"}
+      className={props.chat.username == props.user ? "outgoing" : "incoming"}
     >
       <CardContent>
         <Typography>

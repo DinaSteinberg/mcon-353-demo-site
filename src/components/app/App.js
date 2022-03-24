@@ -7,7 +7,7 @@ import {Todo} from '../todo/Todo';
 import {Chatbox} from '../chat/chatbox';
 import {Chatbox_dummy} from '../chat/chatbox_dummy';
 import {
-  BrowserRouter,
+  HashRouter,
   Routes,
   Route,
 } from "react-router-dom";
@@ -21,14 +21,14 @@ function App() {
   return (
     <div>
        <TodoProvider> 
-        <BrowserRouter>
+        <HashRouter>
           <Header/>
             <Routes>
               <Route path="/" element={<Home />}/>
               <Route path="/todo" element={<Todo />} />
               <Route path="/chat" element={<Chatbox />} />
             </Routes>
-          </BrowserRouter>
+          </HashRouter>
         </TodoProvider>
      </div>
   );
