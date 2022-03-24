@@ -23,17 +23,15 @@ export const Home = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <p>
-          <img
-            class="float_left"
-            width="600rpm"
-            src="https://previews.123rf.com/images/plotulit/plotulit1707/plotulit170700010/81425917-gitaar-aquarel-achtergrond-gitaar-ge%C3%A3%C2%AFsoleerd-.jpg"
-          />
-          <div>
-            <h1>Dina Steinberg</h1>
-            <h3>Computer Programming Student in Touro</h3>
-          </div>
-        </p>
+        <img
+          class="float_left"
+          width="600rpm"
+          src="https://previews.123rf.com/images/plotulit/plotulit1707/plotulit170700010/81425917-gitaar-aquarel-achtergrond-gitaar-ge%C3%A3%C2%AFsoleerd-.jpg"
+        />
+        <div>
+          <h1>Dina Steinberg</h1>
+          <h3>Computer Programming Student in Touro</h3>
+        </div>
         <div class="Bio">
           <h3>The scoop on Dina</h3>
           <p>

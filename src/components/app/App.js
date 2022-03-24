@@ -5,6 +5,7 @@ import {Header} from '../header/header';
 import {TodoProvider} from '../../state/todo/context';
 import {Todo} from '../todo/Todo';
 import {Chatbox} from '../chat/chatbox';
+import {Chatbox_dummy} from '../chat/chatbox_dummy';
 import {
   BrowserRouter,
   Routes,
