@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 
@@ -20,11 +20,10 @@ export const Chatbox = () => {
   const [chats, setChats] = useState([]);
   const [messages, setMessages] = useState([]);
   const [userName, setUser] = useState(" ");
-  const [currChat, setCurrChat] = useState({});
+  const [currChat, setCurrChat] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
-  const [newChatItem, setNewChatItem] = useState([]);
 
-  fetch("https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats", {
+  /*   fetch("https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats", {
     headers: { "Access-Control-Allow-Origin": "*" },
   })
     .then(async (response) => {
@@ -40,6 +39,56 @@ export const Chatbox = () => {
       setErrorMessage(error);
       console.error("There was an error!", error);
     });
+  setCurrChat(chats.slice(0, 1)); */
+
+  function useInterval(callback, delay, ...callbackParams) {
+    const savedCallback = useRef();
+
+    // remember the latest callback
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    // setup the interval
+    useEffect(() => {
+      function tick() {
+        savedCallback.current(callbackParams);
+      }
+
+      if (delay !== null) {
+        const id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [callback, delay, callbackParams]);
+  }
+
+  function fetchChats() {
+    fetch(`https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats`)
+      .then((response) => response.json())
+      .then((data) => {
+        setChats(data.Items);
+      });
+  }
+
+  useEffect(() => {
+    fetchChats();
+  }, []);
+
+  useInterval(
+    (params) => {
+      const chatId = params[0];
+      fetch(
+        `https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats/${chatId}/messages`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setMessages(data.Items);
+        });
+    },
+    // 1000, // fast polling
+    60000, // slow polling
+    currChat.id
+  );
 
   function nameInputted(name) {
     setUser(name);
@@ -56,22 +105,10 @@ export const Chatbox = () => {
       },
       body: JSON.stringify(chat),
     })
-      .then(async (response) => {
-        const data = await response.json();
-        if (!response.ok) {
-          // get error message from body or default to response status
-          const error = (data && data.message) || response.status;
-          return Promise.reject(error);
-        }
-        setNewChatItem(data.Item);
-        console.log("Data: " + JSON.stringify(data));
-        setChats([...chats, newChatItem]);
-        console.log("New Chat: " + newChatItem.id);
-        chatSelected(newChatItem.id);
-      })
-      .catch((error) => {
-        setErrorMessage(error);
-        console.error("There was an error!", error);
+      .then((response) => response.json())
+      .then((data) => {
+        setCurrChat(data.Item.id);
+        setChats([...chats, data.Item]);
       });
   }
 
@@ -90,20 +127,17 @@ export const Chatbox = () => {
   }
 
   function newMessageInputted(newMessage) {
-    const message = {
-      chatId: currChat,
-      username: userName,
-      text: newMessage,
-    };
     fetch("https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/messages", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json", // tells REST that we will send the body data in JSON format
       },
-      body: JSON.stringify(message),
-    })
-      .then((response) => response.json())
-      .then((data) => setMessages([...messages, data.Items]));
+      body: JSON.stringify({
+        currChat,
+        userName,
+        text: newMessage,
+      }),
+    });
     console.log("New message added");
     chatSelected(currChat);
   }
@@ -113,6 +147,7 @@ export const Chatbox = () => {
       <Box sx={{ flexGrow: 1, margin: 10, border: 2, w: 0.7 }}>
         <div className="box_header">
           <DropDown
+            get={fetchChats}
             currChat={currChat}
             chats={chats}
             selected={chatSelected}
@@ -137,19 +172,18 @@ export const Chatbox = () => {
 };
 
 const DropDown = (props) => {
-  const current =
-    props.curr == undefined ? props.chats.slice(0, 1) : props.curr.name;
+  const current = props.curr;
   const [selectedChat, setChat] = useState(current);
   const [newChat, setNewChat] = useState("");
   const [open, setOpen] = useState(false);
 
-  function handleChange(event) {
+  function chatSelected(event) {
     setChat(event.target.value);
     event.preventDefault();
     props.selected(event.target.value);
   }
 
-  function submit() {
+  function submitNewChat() {
     handleClose();
     setNewChat("");
     props.newChat(newChat);
@@ -177,9 +211,10 @@ const DropDown = (props) => {
         <TextField
           select
           label="Chat"
-          onChange={(event) => handleChange(event)}
+          onChange={(event) => chatSelected(event)}
           helperText="Select a chat"
-          value={selectedChat.name}
+          value={selectedChat}
+          onClick={props.get}
         >
           {props.chats.map((chat) => (
             <MenuItem key={chat.id} value={chat.id}>
@@ -187,10 +222,11 @@ const DropDown = (props) => {
             </MenuItem>
           ))}
         </TextField>
+
+        <Button onClick={() => handleClick()}>
+          <AddIcon />
+        </Button>
       </Box>
-      <Button onClick={() => handleClick()}>
-        <AddIcon />
-      </Button>
       <Dialog
         open={open}
         onClose={() => handleClose()}
@@ -209,13 +245,13 @@ const DropDown = (props) => {
             fullWidth
             variant="standard"
             value={newChat}
-            onSubmit={submit}
+            onSubmit={submitNewChat}
             onInput={(e) => setNewChat(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleClose()}>Cancel</Button>
-          <Button onClick={submit}>Add</Button>
+          <Button onClick={submitNewChat}>Add</Button>
         </DialogActions>
       </Dialog>
     </div>
