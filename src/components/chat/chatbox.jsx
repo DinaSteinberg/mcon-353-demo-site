@@ -135,16 +135,24 @@ export const Chatbox = () => {
     <div className="Chat">
       <Box sx={{ flexGrow: 1, margin: 10, border: 2, w: 0.7 }}>
         <div className="box_header">
-          <DropDown
-            get={fetchChats}
-            currChat={currChat}
-            chats={chats}
-            selected={chatSelected}
-            newChat={newChat}
-            curr={currChat}
-            setId={setChatId}
-          />
-          <UserName onChange={nameInputted} />
+          <table>
+            <tr>
+              <DropDown
+                get={fetchChats}
+                currChat={currChat}
+                chats={chats}
+                selected={chatSelected}
+                newChat={newChat}
+                curr={currChat}
+                setId={setChatId}
+              />
+
+              <td width="40%"></td>
+              <td>
+                <UserName onChange={nameInputted} />
+              </td>
+            </tr>
+          </table>
         </div>
         <Divider />
         <div className="box_body">
@@ -201,24 +209,27 @@ const DropDown = (props) => {
         autoComplete="off"
         alignself="left"
       >
-        <TextField
-          select
-          label="Chat"
-          onChange={(event) => chatSelected(event)}
-          helperText="Select a chat"
-          value={selectedChat}
-          onClick={props.get}
-        >
-          {props.chats.map((chat, index) => (
-            <MenuItem key={index} value={chat.id}>
-              {chat.name != null ? chat.name : chat.id}
-            </MenuItem>
-          ))}
-        </TextField>
-
-        <Button onClick={() => handleClick()}>
-          <AddIcon />
-        </Button>
+        <td>
+          <TextField
+            select
+            label="Chat"
+            onChange={(event) => chatSelected(event)}
+            helperText="Select a chat"
+            value={selectedChat}
+            onClick={props.get}
+          >
+            {props.chats.map((chat, index) => (
+              <MenuItem key={index} value={chat.id}>
+                {chat.name != null ? chat.name : chat.id}
+              </MenuItem>
+            ))}
+          </TextField>
+        </td>
+        <td>
+          <Button alignself="center-vertical" onClick={() => handleClick()}>
+            <AddIcon />
+          </Button>
+        </td>
       </Box>
       <Dialog
         open={open}
@@ -302,15 +313,10 @@ const ChatInput = (props) => {
 const DisplayChat = (props) => {
   const name = props.chat.username == undefined ? "" : props.chat.username;
   return (
-    <Card
-      sx={{ m: 2, zIndex: "right" }}
-      className={name == props.user ? "outgoing" : "incoming"}
-    >
-      <CardContent>
-        <Typography key={props.key}>
-          {name}: {props.chat.text}
-        </Typography>
-      </CardContent>
-    </Card>
+    <div className={name == props.user ? "outgoing" : "incoming"} margin="2">
+      <div>
+        {name}: {props.chat.text}
+      </div>
+    </div>
   );
 };
