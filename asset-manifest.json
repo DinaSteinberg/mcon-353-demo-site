@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/mcon-353-demo-site/static/css/main.fbb4c1d6.css",
-    "main.js": "/mcon-353-demo-site/static/js/main.1da461a1.js",
+    "main.css": "/mcon-353-demo-site/static/css/main.8e926165.css",
+    "main.js": "/mcon-353-demo-site/static/js/main.c08371c6.js",
     "static/js/787.a3103ff7.chunk.js": "/mcon-353-demo-site/static/js/787.a3103ff7.chunk.js",
     "static/media/my_family.jpg": "/mcon-353-demo-site/static/media/my_family.1589f3cb1c867c3730f6.jpg",
     "static/media/my_nieces.jpg": "/mcon-353-demo-site/static/media/my_nieces.8f31eca0939e90ec740a.jpg",
@@ -10,12 +10,12 @@
     "static/media/bridge_painting.jpg": "/mcon-353-demo-site/static/media/bridge_painting.9e04f196c246291f4267.jpg",
     "static/media/birdhouses_painting.jpg": "/mcon-353-demo-site/static/media/birdhouses_painting.b6548597f7d8762a0193.jpg",
     "index.html": "/mcon-353-demo-site/index.html",
-    "main.fbb4c1d6.css.map": "/mcon-353-demo-site/static/css/main.fbb4c1d6.css.map",
-    "main.1da461a1.js.map": "/mcon-353-demo-site/static/js/main.1da461a1.js.map",
+    "main.8e926165.css.map": "/mcon-353-demo-site/static/css/main.8e926165.css.map",
+    "main.c08371c6.js.map": "/mcon-353-demo-site/static/js/main.c08371c6.js.map",
     "787.a3103ff7.chunk.js.map": "/mcon-353-demo-site/static/js/787.a3103ff7.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.fbb4c1d6.css",
-    "static/js/main.1da461a1.js"
+    "static/css/main.8e926165.css",
+    "static/js/main.c08371c6.js"
   ]
 }
