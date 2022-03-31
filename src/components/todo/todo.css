@@ -155,13 +155,13 @@ h1 {
 /*Chat css*/
 
 .outgoing {
-  background-color: rgb(17, 163, 17);
+  background: rgb(17, 163, 17);
   text-align: right;
   width: fit-content;
 }
 
 .incoming {
-  background-color: #2355c2;
+  background: #2355c2;
   text-align: left;
   width: fit-content;
 }

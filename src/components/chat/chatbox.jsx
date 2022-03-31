@@ -16,30 +16,14 @@ import DialogContentText from "@mui/material/DialogContentText";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 
+import { ChatContext } from "../../state/chat/context";
+import { ChatActions } from "../../state/chat/reducer";
+
 export const Chatbox = () => {
   const [chats, setChats] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [userName, setUser] = useState(" ");
+  const [username, setUser] = useState(" ");
   const [currChat, setCurrChat] = useState("");
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  /*   fetch("https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats", {
-    headers: { "Access-Control-Allow-Origin": "*" },
-  })
-    .then(async (response) => {
-      const data = await response.json();
-      if (!response.ok) {
-        // get error message from body or default to response status
-        const error = (data && data.message) || response.status;
-        return Promise.reject(error);
-      }
-      setChats(data.Items);
-    })
-    .catch((error) => {
-      setErrorMessage(error);
-      console.error("There was an error!", error);
-    });
-  setCurrChat(chats.slice(0, 1)); */
 
   function useInterval(callback, delay, ...callbackParams) {
     const savedCallback = useRef();
@@ -76,7 +60,8 @@ export const Chatbox = () => {
 
   useInterval(
     (params) => {
-      const chatId = params[0];
+      const chatId = currChat;
+      console.log("ChatId: " + chatId + " currChat: " + currChat);
       fetch(
         `https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/chats/${chatId}/messages`
       )
@@ -85,13 +70,14 @@ export const Chatbox = () => {
           setMessages(data.Items);
         });
     },
-    // 1000, // fast polling
-    60000, // slow polling
+    1000, // fast polling
+    //60000, // slow polling
     currChat.id
   );
 
   function nameInputted(name) {
     setUser(name);
+    console.log(username);
   }
 
   function newChat(newName) {
@@ -126,20 +112,23 @@ export const Chatbox = () => {
     }
   }
 
-  function newMessageInputted(newMessage) {
+  function setChatId(chatId) {
+    setCurrChat(chatId);
+  }
+
+  function newMessageInputted(message) {
+    const newMessage = {
+      chatId: currChat,
+      username: username,
+      text: message,
+    };
     fetch("https://z36h06gqg7.execute-api.us-east-1.amazonaws.com/messages", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json", // tells REST that we will send the body data in JSON format
       },
-      body: JSON.stringify({
-        currChat,
-        userName,
-        text: newMessage,
-      }),
+      body: JSON.stringify(newMessage),
     });
-    console.log("New message added");
-    chatSelected(currChat);
   }
 
   return (
@@ -153,14 +142,17 @@ export const Chatbox = () => {
             selected={chatSelected}
             newChat={newChat}
             curr={currChat}
+            setId={setChatId}
           />
           <UserName onChange={nameInputted} />
         </div>
         <Divider />
         <div className="box_body">
-          {messages.map((chat) => (
-            <DisplayChat chat={chat} user={userName} />
-          ))}
+          <div>
+            {messages.map((chat, index) => (
+              <DisplayChat chat={chat} key={index} user={username} />
+            ))}
+          </div>
         </div>
         <Divider />
         <div className="box_footer">
@@ -180,7 +172,8 @@ const DropDown = (props) => {
   function chatSelected(event) {
     setChat(event.target.value);
     event.preventDefault();
-    props.selected(event.target.value);
+    // props.selected(event.target.value);
+    props.setId(event.target.value);
   }
 
   function submitNewChat() {
@@ -216,8 +209,8 @@ const DropDown = (props) => {
           value={selectedChat}
           onClick={props.get}
         >
-          {props.chats.map((chat) => (
-            <MenuItem key={chat.id} value={chat.id}>
+          {props.chats.map((chat, index) => (
+            <MenuItem key={index} value={chat.id}>
               {chat.name != null ? chat.name : chat.id}
             </MenuItem>
           ))}
@@ -263,8 +256,12 @@ const UserName = (props) => {
 
   function submit(event) {
     event.preventDefault();
-    setInput("");
     props.onChange(input);
+  }
+
+  function handleInput(e) {
+    setInput(e.target.value);
+    console.log("Input: " + input);
   }
 
   return (
@@ -275,7 +272,7 @@ const UserName = (props) => {
         label="Enter Username"
         sx={{ m: 1, width: "25ch" }}
         value={input}
-        onInput={(e) => setInput(e.target.value)}
+        onInput={handleInput}
       />
     </form>
   );
@@ -303,14 +300,15 @@ const ChatInput = (props) => {
 };
 
 const DisplayChat = (props) => {
+  const name = props.chat.username == undefined ? "" : props.chat.username;
   return (
     <Card
-      sx={{ m: 2 }}
-      className={props.chat.username == props.user ? "outgoing" : "incoming"}
+      sx={{ m: 2, zIndex: "right" }}
+      className={name == props.user ? "outgoing" : "incoming"}
     >
       <CardContent>
-        <Typography>
-          {props.chat.username}: {props.chat.text}
+        <Typography key={props.key}>
+          {name}: {props.chat.text}
         </Typography>
       </CardContent>
     </Card>
