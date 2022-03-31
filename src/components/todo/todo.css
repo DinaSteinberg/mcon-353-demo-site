@@ -157,13 +157,22 @@ h1 {
 .outgoing {
   background: rgb(17, 163, 17);
   text-align: right;
+  align-items: right;
   width: fit-content;
+  display: flex;
+  margin: 4px auto;
+  padding: 16px;
+  border-radius: 5px;
 }
 
 .incoming {
   background: #2355c2;
-  text-align: left;
+  align-self: left;
   width: fit-content;
+  display: flex;
+  margin: 4px auto;
+  padding: 16px;
+  border-radius: 5px;
 }
 
 .box_body {
