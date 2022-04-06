@@ -9,8 +9,8 @@ export const Todo = () => {
   return (
     <div data-testid="todo" className="Todo">
       <TodoForm />
-      {todos.map((todo) => (
-        <TodoItem todo={todo} />
+      {todos.map((todo, index) => (
+        <TodoItem todo={todo} i={index} />
       ))}
     </div>
   );
@@ -19,15 +19,24 @@ export const Todo = () => {
 const TodoItem = (props) => {
   const { removeTodo, completeTodo } = useContext(TodoContext);
   return (
-    <div className={props.todo.isComplete ? "todo-row-complete" : "todo-row"}>
-      {props.todo.text}
-
-      <div className="icons">
-        <IconButton onClick={() => completeTodo(props.todo)}>
+    <div
+      className={props.todo.isComplete ? "todo-row-complete" : "todo-row"}
+      key={props.i}
+      data-testid="todoItem"
+    >
+      <span data-testid="todoItem_text">{props.todo.text}</span>
+      <div className="icons" data-testid="todoItem_icons">
+        <IconButton
+          onClick={() => completeTodo(props.todo)}
+          data-testid="todoItem_icon_check"
+        >
           <IoIosCheckmarkCircleOutline className="done-icon" />
         </IconButton>
 
-        <IconButton onClick={() => removeTodo(props.todo)}>
+        <IconButton
+          onClick={() => removeTodo(props.todo)}
+          data-testid="todoItem_icon_delete"
+        >
           <IoMdTrash className="delete-icon" />
         </IconButton>
       </div>

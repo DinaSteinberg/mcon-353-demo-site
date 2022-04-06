@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-//import { TodoContext } from "../../components/todo/TodoContext";
 
 export const TodoContext = React.createContext();
 
